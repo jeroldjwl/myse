@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.slf4j13:slf4j-log4j13:1.0-beta9">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/slf4j13/slf4j-log4j13/1.0-beta9/slf4j-log4j13-1.0-beta9.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/slf4j13/slf4j-log4j13/1.0-beta9/slf4j-log4j13-1.0-beta9-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/slf4j13/slf4j-log4j13/1.0-beta9/slf4j-log4j13-1.0-beta9-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

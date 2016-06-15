@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="se-core:war">
+    <output-path>$PROJECT_DIR$/se-core/target</output-path>
+    <root id="archive" name="se-core.war">
+      <element id="artifact" artifact-name="se-core:war exploded" />
+    </root>
+  </artifact>
+</component>
