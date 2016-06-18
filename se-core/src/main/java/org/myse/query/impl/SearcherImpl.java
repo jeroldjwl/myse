@@ -45,5 +45,6 @@ public class SearcherImpl implements Searcher {
             }
         }
         System.out.println(count);
+        System.out.println("just a test");
     }
 }
