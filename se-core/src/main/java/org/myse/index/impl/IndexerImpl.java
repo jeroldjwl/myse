@@ -2,10 +2,10 @@ package org.myse.index.impl;
 
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.SolrServerException;
-import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.apache.solr.client.solrj.response.UpdateResponse;
 import org.apache.solr.common.SolrInputDocument;
 import org.myse.search.Indexer;
+import org.myse.search.SearchFactory;
 import org.myse.search.impl.AttachmentPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,12 +21,11 @@ public class IndexerImpl implements Indexer {
     private static SolrClient solrClient;
 
     public IndexerImpl() {
-
+        init();
     }
 
-    static {
-        String url = "http://localhost:8983/solr/mydata";
-        solrClient = new HttpSolrClient(url);
+    private void init() {
+        solrClient = SearchFactory.getClient();
     }
 
     public void index(AttachmentPage page) throws IOException, SolrServerException {

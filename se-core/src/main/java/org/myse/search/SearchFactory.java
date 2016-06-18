@@ -1,5 +1,7 @@
 package org.myse.search;
 
+import org.apache.solr.client.solrj.SolrClient;
+import org.apache.solr.client.solrj.impl.HttpSolrClient;
 import org.myse.crawler.impl.CrawlerImpl;
 import org.myse.index.impl.IndexerImpl;
 import org.myse.query.impl.SearcherImpl;
@@ -9,6 +11,17 @@ import org.myse.util.SearchUtil;
  * Created by Jerold on 16/5/29.
  */
 public class SearchFactory {
+    private static SolrClient solrClient;
+
+    static {
+        String url = "http://localhost:8983/solr/mydata";
+        solrClient = new HttpSolrClient(url);
+    }
+
+    public static SolrClient getClient() {
+        return solrClient;
+    }
+
     public static Crawler getCrawler() {
         String className = SearchUtil.getCrawler();
         if (className != null) {
