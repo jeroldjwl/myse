@@ -2,10 +2,16 @@ package org.myse.search;
 
 import org.apache.solr.client.solrj.SolrClient;
 import org.apache.solr.client.solrj.impl.HttpSolrClient;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.client.transport.TransportClient;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.myse.crawler.impl.CrawlerImpl;
 import org.myse.index.impl.IndexerImpl;
 import org.myse.query.impl.SearcherImpl;
 import org.myse.util.SearchUtil;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * Created by Jerold on 16/5/29.
@@ -13,13 +19,24 @@ import org.myse.util.SearchUtil;
 public class SearchFactory {
     private static SolrClient solrClient;
 
+    private static Client client;
+
     static {
         String url = "http://localhost:8983/solr/mydata";
         solrClient = new HttpSolrClient(url);
+        try {
+            client = TransportClient.builder().build().addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9300));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 
     public static SolrClient getClient() {
         return solrClient;
+    }
+
+    public static Client getEsClient() {
+        return client;
     }
 
     public static Crawler getCrawler() {
