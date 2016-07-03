@@ -115,6 +115,17 @@
             <artifactId>elasticsearch</artifactId>
             <version>2.3.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.7.1</version>
+        </dependency>
+       
     </dependencies>
     <build>
         <finalName>se-core</finalName>
