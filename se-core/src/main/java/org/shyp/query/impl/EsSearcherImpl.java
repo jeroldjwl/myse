@@ -12,12 +12,12 @@ import org.shyp.search.Searcher;
 /**
  * Created by Jerold on 16/7/4.
  */
-public class EsSearchImpl implements Searcher {
+public class EsSearcherImpl implements Searcher {
     private String index;
     private String type;
     private Client client;
 
-    public EsSearchImpl() {
+    public EsSearcherImpl() {
         init();
     }
 
