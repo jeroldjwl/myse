@@ -6,7 +6,7 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.shyp.crawler.impl.CrawlerImpl;
-import org.shyp.index.impl.IndexerImpl;
+import org.shyp.index.impl.EsIndexerImpl;
 import org.shyp.query.impl.SearcherImpl;
 import org.shyp.util.SearchUtil;
 
@@ -70,7 +70,7 @@ public class SearchFactory {
                 e.printStackTrace();
             }
         }
-        return new IndexerImpl();
+        return new EsIndexerImpl();
     }
 
     public static Searcher getSearcher() {

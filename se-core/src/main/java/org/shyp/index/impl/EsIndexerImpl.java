@@ -67,7 +67,6 @@ public class EsIndexerImpl implements Indexer {
         settings.put("analysis", analysis);
 
         client.admin().indices().prepareCreate(index).setSettings(settings).get();
-        System.out.println("++++++++++++++++++++++++++++++++++++++");
     }
 
 

@@ -6,6 +6,7 @@ import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.apache.solr.common.SolrDocumentList;
+import org.shyp.query.QueryMetaData;
 import org.shyp.search.SearchFactory;
 import org.shyp.search.Searcher;
 
@@ -28,10 +29,17 @@ public class SearcherImpl implements Searcher {
     }
 
     @Override
-    public void search() throws IOException, SolrServerException {
+    public void search(QueryMetaData qmd) {
         SolrQuery query = new SolrQuery();
         query.setQuery("江西").setHighlight(true);
-        QueryResponse response = solrClient.query(query);
+        QueryResponse response = null;
+        try {
+            response = solrClient.query(query);
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         SolrDocumentList solrDocuments = response.getResults();
         int count = 0;
         Iterator iterator = solrDocuments.iterator();
