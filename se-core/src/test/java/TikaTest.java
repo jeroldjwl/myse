@@ -3,7 +3,7 @@ import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.sax.BodyContentHandler;
-import org.myse.crawler.impl.CrawlerImpl;
+import org.shyp.crawler.impl.CrawlerImpl;
 import org.xml.sax.SAXException;
 
 import java.io.File;
