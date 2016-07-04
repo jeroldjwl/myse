@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/se-core/se-core.iml" filepath="$PROJECT_DIR$/se-core/se-core.iml" />
-      <module fileurl="file://$PROJECT_DIR$/se-test/se-test.iml" filepath="$PROJECT_DIR$/se-test/se-test.iml" />
     </modules>
   </component>
 </project>
