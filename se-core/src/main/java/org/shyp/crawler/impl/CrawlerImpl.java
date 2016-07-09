@@ -10,7 +10,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.solr.client.solrj.SolrServerException;
 import org.apache.tika.exception.TikaException;
 import org.shyp.crawler.CrawlerConfig;
 import org.shyp.parser.HtmlParserTool;
@@ -39,7 +38,7 @@ public class CrawlerImpl implements Crawler {
     private static String DEFAULT_CHARSET = "GB2312,utf-8;q=0.7,*;q=0.7";
     private Map<String, String> pageRelation;
     private LinkFilter linkFilter;
-
+    private Indexer indexer;
     private int threads;
 
     private volatile int count;
@@ -62,6 +61,7 @@ public class CrawlerImpl implements Crawler {
         }
         crawledLinks = new HashSet<String>();
         unCrawlLinks = new LinkedList<String>();
+        indexer = SearchFactory.getIndexer();
         threads = CrawlerConfig.THREAD_NUM;
         addSeeds();
         pageRelation = new HashMap();
@@ -80,6 +80,11 @@ public class CrawlerImpl implements Crawler {
 
     private synchronized void addSeeds() {
         unCrawlLinks.add(CrawlerConfig.CRWL_PATH);
+    }
+
+    public void createIndex(String index, String type) {
+        indexer.createSettings(index);
+        indexer.createMapping(index, type);
     }
 
     public void fullCrawl(int threadId) {
@@ -102,7 +107,7 @@ public class CrawlerImpl implements Crawler {
     }
 
     public void incrementalCrawl() {
-
+        //TODO
     }
 
     public void crawl() throws Exception {
@@ -155,23 +160,26 @@ public class CrawlerImpl implements Crawler {
                     // "Response contains no content");
                 } else {
                     System.out.println("处理URL: " + url);
-                    String type = entity.getContentType().getValue();
-                    if (type.contains("word") || type.contains("pdf")) {
-                        System.out.println("发现一个附件: " + url);
-                        if (null != entity.getContent())
-                            extractAndIndexAttachment(url, type, entity.getContent());
-                    } else {
-                        //TODO
-                        //extract links here
-                        Set<String> set = HtmlParserTool.extractLinks(url, linkFilter);
-                        for (String s : set) {
-                            addToUncrawl(s);
-                            addRelation(s, url);
-                        }
-                        if (count > 0) {
-                            synchronized (lock) {
-                                count--;//唤醒等待线程
-                                lock.notifyAll();
+                    String type = null;
+                    if (entity.getContentType() != null) {
+                        type = entity.getContentType().getValue();
+                        if (type.contains("word") || type.contains("pdf")) {
+                            System.out.println("发现一个附件: " + url);
+                            if (null != entity.getContent())
+                                extractAndIndexAttachment(url, type, entity.getContent());
+                        } else {
+                            //TODO
+                            //extract links here
+                            Set<String> set = HtmlParserTool.extractLinks(url, linkFilter);
+                            for (String s : set) {
+                                addToUncrawl(s);
+                                addRelation(s, url);
+                            }
+                            if (count > 0) {
+                                synchronized (lock) {
+                                    count--;//唤醒等待线程
+                                    lock.notifyAll();
+                                }
                             }
                         }
                     }
@@ -244,12 +252,6 @@ public class CrawlerImpl implements Crawler {
 
     private void index(AttachmentPage ap) {
         Indexer indexer = SearchFactory.getIndexer();
-        try {
-            indexer.index(ap);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (SolrServerException e) {
-            e.printStackTrace();
-        }
+        indexer.index(ap);
     }
 }

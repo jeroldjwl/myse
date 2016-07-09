@@ -13,6 +13,7 @@ public class MyCrawler {
     public static void main(String[] args) throws InterruptedException {
         PropertyConfigurator.configure(ClassLoader.getSystemResource("log4j.properties"));
         CrawlerImpl crawler = new CrawlerImpl();
+        crawler.createIndex(CrawlerConfig.INDEX, CrawlerConfig.TYPE);
         int threads = CrawlerConfig.THREAD_NUM;
         ArrayList<Thread> threadList = new ArrayList<Thread>(threads);
         for (int i = 0; i < threads; i++) {

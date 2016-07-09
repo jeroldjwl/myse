@@ -28,16 +28,31 @@ public class IndexerImpl implements Indexer {
         solrClient = SearchFactory.getClient();
     }
 
-    public void index(AttachmentPage page) throws IOException, SolrServerException {
+    public void index(AttachmentPage page) {
         SolrInputDocument document = new SolrInputDocument();
         document.addField("id", page.getUrl().hashCode());
         document.addField("url", page.getParentPage());
         document.addField("title", page.getTitle());
         document.addField("content", page.getContent());
         document.addField("type", page.getType());
-        UpdateResponse response = solrClient.add(document);
-        solrClient.commit();
+        try {
+            UpdateResponse response = solrClient.add(document);
+            solrClient.commit();
+        } catch (SolrServerException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         logger.info("index successfully");
     }
 
+    @Override
+    public void createSettings(String index) {
+        //TODO
+    }
+
+    @Override
+    public void createMapping(String index, String type) {
+        //TODO
+    }
 }

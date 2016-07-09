@@ -4,6 +4,7 @@ package org.shyp.util;
  * Created by Jerold on 16/5/29.
  */
 public class SearchUtil {
+
     public static Object Object() {
         //TODO
         return null;

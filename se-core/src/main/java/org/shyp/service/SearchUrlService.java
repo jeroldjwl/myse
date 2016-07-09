@@ -9,12 +9,12 @@ import java.util.List;
  * Created by Jerold on 16/7/3.
  */
 public class SearchUrlService {
-    public SearchUrlService() {
-
-    }
-
     //if we use SpringFramework, we can add AutoWired annotation on it to load SearchUrlDao automatically
     SearchUrlDao searchUrlDao;
+
+    public SearchUrlService() {
+        searchUrlDao = new SearchUrlDao();
+    }
 
     public int addUrl(String url, Date createTime, Date updateTime) {
         return searchUrlDao.addUrl(url, createTime, updateTime);

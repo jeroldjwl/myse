@@ -1,14 +1,13 @@
 package org.shyp.index.impl;
 
-import org.apache.solr.client.solrj.SolrServerException;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.Client;
+import org.shyp.crawler.CrawlerConfig;
 import org.shyp.search.Indexer;
 import org.shyp.search.SearchFactory;
 import org.shyp.search.impl.AttachmentPage;
 import org.shyp.service.SearchUrlService;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,8 +17,6 @@ import java.util.Map;
  */
 public class EsIndexerImpl implements Indexer {
     private Client client;
-    private String index;
-    private String type;
     private SearchUrlService service;
 
     public EsIndexerImpl() {
@@ -28,21 +25,21 @@ public class EsIndexerImpl implements Indexer {
 
     private void init() {
         client = SearchFactory.getEsClient();
-        index = "shyp";
-        type = "xxmh";
         service = new SearchUrlService();
     }
 
     @Override
-    public void index(AttachmentPage page) throws IOException, SolrServerException {
+    public void index(AttachmentPage page) {
         Map doc = new HashMap();
-        doc.put("_id", page.getUrl());
         doc.put("url", page.getUrl());
         doc.put("title", page.getTitle());
         doc.put("parentPage", page.getParentPage());
         doc.put("content", page.getContent());
         doc.put("createTime", page.getCreateTime());
-        IndexResponse response = client.prepareIndex(index, type).setSource(doc).get();
+        IndexResponse response = client.prepareIndex(CrawlerConfig.INDEX, CrawlerConfig.TYPE)
+                .setSource(doc)
+                .execute()
+                .actionGet();
         String id = response.getId();
         service.addUrl(id, new Date(), new Date());
     }
@@ -117,8 +114,16 @@ public class EsIndexerImpl implements Indexer {
 
     public static void main(String[] args) {
         EsIndexerImpl indexer = new EsIndexerImpl();
-        indexer.createSettings("shyptest");
-        indexer.createMapping("shyptest", "xxmh");
+        indexer.createSettings("shyp");
+        indexer.createMapping("shyp", "xxmh");
+        AttachmentPage ap = new AttachmentPage();
+        ap.setUrl("www.shyp.com");
+        ap.setType("ms/word");
+        ap.setParentPage("www.shyp.com");
+        ap.setContent("test page");
+        ap.setCreateTime(new Date());
+        ap.setLastCrawledTime(new Date());
+        indexer.index(ap);
     }
 
 }
