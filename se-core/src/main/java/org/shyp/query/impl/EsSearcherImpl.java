@@ -2,10 +2,10 @@ package org.shyp.query.impl;
 
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
-import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermsLookupQueryBuilder;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.shyp.crawler.CrawlerConfig;
 import org.shyp.query.QueryMetaData;
 import org.shyp.search.SearchFactory;
 import org.shyp.search.Searcher;
@@ -24,8 +24,8 @@ public class EsSearcherImpl implements Searcher {
 
     private void init() {
         client = SearchFactory.getEsClient();
-        index = "shyp";
-        type = "xxmh";
+        index = CrawlerConfig.INDEX;
+        type = CrawlerConfig.TYPE;
     }
 
     @Override
@@ -33,37 +33,30 @@ public class EsSearcherImpl implements Searcher {
         String query = qmd.getQuery();
         int pageSize = qmd.getPageNum();
         int offset = qmd.getOffset();
-        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-        queryBuilder.must(QueryBuilders.termQuery("all-zh", query));
+        QueryStringQueryBuilder queryBuilder = QueryBuilders
+                .queryStringQuery(query)
+                .defaultField("all-zh");
         SearchResponse response = client.prepareSearch(index).setTypes(type)
                 .setQuery(queryBuilder)
                 .setFrom(offset)
                 .setSize(pageSize)
                 .execute().actionGet();
         SearchHit[] hits = response.getHits().getHits();
-        TermsLookupQueryBuilder tqb = QueryBuilders
-                .termsLookupQuery("sec_attr1")
-                .lookupIndex("ecsf_crm_security")
-                .lookupType("crm_runtime.EmpView")
-                .lookupId("jerold")
-                .lookupPath("acl.sec_attr1");
-        queryBuilder.must(tqb);
-        System.out.println();
-        SearchHit hit = hits[0];
-        System.out.println(hit.getSourceAsString());
+        System.out.println("returned result list below:");
+        if (hits != null) {
+            for (SearchHit hit : hits) {
+                System.out.println(hit.getSourceAsString());
+            }
+        }
+        System.out.println("end search");
     }
 
     public static void main(String[] args) {
-        BoolQueryBuilder queryBuilder = QueryBuilders.boolQuery();
-        queryBuilder.must(QueryBuilders.termQuery("all-zh", "uu"));
-        TermsLookupQueryBuilder tqb = QueryBuilders
-                .termsLookupQuery("sec_attr1")
-                .lookupIndex("ecsf_crm_security")
-                .lookupType("crm_runtime.EmpView")
-                .lookupId("jerold")
-                .lookupPath("acl.sec_attr1");
-        queryBuilder.must(tqb);
-        System.out.println(queryBuilder.toString());
-
+        Searcher searcher = SearchFactory.getSearcher();
+        QueryMetaData qmd = new QueryMetaData();
+        qmd.setQuery("杨浦");
+        qmd.setOffset(1);
+        qmd.setPageNum(10);
+        searcher.search(qmd);
     }
 }
