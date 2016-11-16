@@ -11,7 +11,7 @@ public class User {
     private Location location;
     private String description;
     private String picSrc;
-    private int gender;
+    private String gender;
     private int fans;
     private int follow;
     private int weiboNum;
@@ -60,11 +60,11 @@ public class User {
         this.picSrc = picSrc;
     }
 
-    public int getGender() {
+    public String getGender() {
         return gender;
     }
 
-    public void setGender(int gender) {
+    public void setGender(String gender) {
         this.gender = gender;
     }
 
@@ -122,5 +122,24 @@ public class User {
 
     public void setFriends(int friends) {
         this.friends = friends;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", nickName='" + nickName + '\'' +
+                ", location=" + location +
+                ", description='" + description + '\'' +
+                ", picSrc='" + picSrc + '\'' +
+                ", gender='" + gender + '\'' +
+                ", fans=" + fans +
+                ", follow=" + follow +
+                ", weiboNum=" + weiboNum +
+                ", collect=" + collect +
+                ", createDate=" + createDate +
+                ", certification='" + certification + '\'' +
+                ", friends=" + friends +
+                '}';
     }
 }
