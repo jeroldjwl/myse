@@ -1,10 +1,14 @@
 package org.sina.data;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.sina.EsFactory;
+import org.sina.adapter.EsAdapter;
 import org.sina.entity.Location;
 import org.sina.entity.User;
 
@@ -19,10 +23,10 @@ import java.util.List;
  * Created by Jerold on 2016/11/15.
  */
 public class ExcelDataExtractor implements Extractor {
-    private ArrayList<User> users;
+    private EsAdapter adapter;
 
     public ExcelDataExtractor() {
-
+        adapter = EsFactory.getEsAdapter(1);
     }
 
     @Override
@@ -32,8 +36,8 @@ public class ExcelDataExtractor implements Extractor {
         Iterator rows = sheet.rowIterator();
         rows.next();
         int count = 0;
+        List<User> users = new ArrayList<User>();
         try {
-            List<User> users = new ArrayList<User>();
             while (rows.hasNext()) {
                 Row row = (Row) rows.next();
                 Object[] cellVal = new Object[13];
@@ -62,7 +66,6 @@ public class ExcelDataExtractor implements Extractor {
                 String loc = String.valueOf(cellVal[2]);
                 String[] address = loc.trim().split(" ");
                 Location location = new Location();
-                location.setCountryCode(86);
                 location.setProvince(address.length > 0 ? address[0] : "其他");
                 if (address.length > 1) {
                     location.setCity(address[1]);
@@ -92,9 +95,8 @@ public class ExcelDataExtractor implements Extractor {
                 count++;
                 if (count >= 200) {
                     //push to ES
-                    for (User u : users) {
-                        System.out.println(u.toString());
-                    }
+                    indexBatch(users);
+                    count = 0;
                     users.clear();
                 }
             }
@@ -102,8 +104,23 @@ public class ExcelDataExtractor implements Extractor {
             throw e;
         } finally {
             //push the left
-
+            indexBatch(users);
         }
 
+    }
+
+    private void indexBatch(List<User> users) {
+        List<String> usersJson = new ArrayList<>();
+        for (User u : users) {
+            ObjectMapper om = new ObjectMapper();
+            String userJson = null;
+            try {
+                userJson = om.writeValueAsString(u);
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
+            usersJson.add(userJson);
+        }
+        adapter.index("sina", "users", usersJson);
     }
 }

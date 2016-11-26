@@ -4,17 +4,8 @@ package org.sina.entity;
  * Created by Jerold on 2016/11/15.
  */
 public class Location {
-    private int countryCode;
     private String province;
     private String city;
-
-    public int getCountryCode() {
-        return countryCode;
-    }
-
-    public void setCountryCode(int countryCode) {
-        this.countryCode = countryCode;
-    }
 
     public String getProvince() {
         return province;
