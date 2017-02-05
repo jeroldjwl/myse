@@ -8,8 +8,8 @@ public class QueryMetaData {
     private int pageSize;
     private int from;
     private int to;
-    private String index;
-    private String type;
+    private String[] indices;
+    private String[] types;
 
     public String getKeyword() {
         return keyword;
@@ -43,19 +43,19 @@ public class QueryMetaData {
         this.to = to;
     }
 
-    public String getIndex() {
-        return index;
+    public void addIndices(String[] index) {
+        this.indices = index;
     }
 
-    public void setIndex(String index) {
-        this.index = index;
+    public String[] getIndices() {
+        return this.indices;
     }
 
-    public String getType() {
-        return type;
+    public void addTypes(String[] types) {
+        this.types = types;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public String[] getTypes() {
+        return this.types;
     }
 }

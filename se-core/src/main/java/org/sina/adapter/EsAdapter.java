@@ -1,6 +1,7 @@
 package org.sina.adapter;
 
-import org.sina.meta.SearchHit;
+import org.sina.meta.EsClause;
+import org.sina.meta.EsFilter;
 
 import java.util.List;
 
@@ -14,6 +15,6 @@ public interface EsAdapter {
 
     void createMapping(String index, String type, String mappings) throws Exception;
 
-    SearchHit doSearch();
+    void doBasicSearch(String[] indices, String[] types, String keyword, int from, int size, EsClause[] clauses, EsFilter[] filters);
 
 }
